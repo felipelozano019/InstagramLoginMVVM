@@ -14,17 +14,22 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -34,6 +39,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -56,8 +64,7 @@ fun LoginScreen() {
 @Composable
 fun Header(modifier: Modifier) {
     val activity = LocalContext.current as Activity
-    Icon(
-        imageVector = Icons.Default.Close,
+    Icon(imageVector = Icons.Default.Close,
         contentDescription = "close component",
         modifier = modifier.clickable {
             activity.finish()
@@ -87,13 +94,11 @@ fun Body(modifier: Modifier) {
         PasswordField(
             Modifier
                 .align(Alignment.CenterHorizontally)
-                .fillMaxWidth(),
-            password
+                .fillMaxWidth(), password
         ) { password = it }
         Spacer(modifier = Modifier.size((8).dp))
         ForgotPassword(
-            Modifier
-                .align(Alignment.End)
+            Modifier.align(Alignment.End)
         )
         Spacer(modifier = Modifier.size(16.dp))
         LoginButton(isLoginEnable, Modifier.align(Alignment.CenterHorizontally))
@@ -116,6 +121,9 @@ fun ImageLogo(modifier: Modifier) {
 @Composable
 fun EmailField(modifier: Modifier, email: String, onEmailChange: (String) -> Unit) {
     TextField(
+        singleLine = true,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
         value = email,
         onValueChange = { onEmailChange(it) },
         modifier = modifier,
@@ -133,7 +141,13 @@ fun EmailField(modifier: Modifier, email: String, onEmailChange: (String) -> Uni
 
 @Composable
 fun PasswordField(modifier: Modifier, password: String, onPasswordChange: (String) -> Unit) {
+
+    var passwordVisibility by remember { mutableStateOf(false) }
+
     TextField(
+        singleLine = true,
+        maxLines = 1,
+        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
         value = password,
         onValueChange = { onPasswordChange(it) },
         modifier = modifier,
@@ -145,9 +159,28 @@ fun PasswordField(modifier: Modifier, password: String, onPasswordChange: (Strin
             focusedLabelColor = Color.Gray,
             unfocusedContainerColor = Color.Transparent,
             focusedContainerColor = Color.Transparent,
-        )
+        ),
+        trailingIcon = {
+            val img = if (passwordVisibility) {
+                Icons.Filled.VisibilityOff
+            } else {
+                Icons.Filled.Visibility
+            }
+            IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
+                Icon(imageVector = img, contentDescription = "password visibility")
+            }
+        },
+        visualTransformation = if(passwordVisibility){
+            VisualTransformation.None
+        } else {
+            PasswordVisualTransformation()
+        }
     )
+
 }
+
+
+
 
 @Composable
 fun ForgotPassword(modifier: Modifier) {
@@ -203,10 +236,7 @@ fun RowSocial() {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            painterResource(id = R.drawable.logos__facebook),
-            "Facebook",
-            Modifier
-                .size(20.dp)
+            painterResource(id = R.drawable.logos__facebook), "Facebook", Modifier.size(20.dp)
 
         )
 
@@ -216,10 +246,9 @@ fun RowSocial() {
             "Login with Facebook",
             fontSize = 14.sp,
             color = Color.Gray,
-            modifier = Modifier
-                .padding(horizontal = 8.dp),
+            modifier = Modifier.padding(horizontal = 8.dp),
 
-        )
+            )
     }
 }
 
@@ -248,10 +277,7 @@ fun SignUp(modifier: Modifier) {
             modifier = Modifier.padding(horizontal = 8.dp)
         )
         Text(
-            "Sign Up",
-            fontSize = 14.sp,
-            color = Color(0xFF4EA8E9),
-            fontWeight = FontWeight.Bold
+            "Sign Up", fontSize = 14.sp, color = Color(0xFF4EA8E9), fontWeight = FontWeight.Bold
         )
     }
 }
