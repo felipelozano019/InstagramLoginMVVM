@@ -17,8 +17,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -33,8 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.fontResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -52,8 +48,10 @@ fun LoginScreen() {
     ) {
         Header(Modifier.align(Alignment.TopEnd))
         Body(Modifier.align(Alignment.Center))
+        Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
+
 
 @Composable
 fun Header(modifier: Modifier) {
@@ -156,8 +154,8 @@ fun ForgotPassword(modifier: Modifier) {
     Text(
         text = "Forgot Password?",
         fontSize = 12.sp,
-        fontStyle = FontStyle.Italic,
-        color = Color.Gray,
+        fontWeight = FontWeight.Bold,
+        color = Color(0xFF4EA8E9),
         modifier = modifier
     )
 }
@@ -221,6 +219,39 @@ fun RowSocial() {
             modifier = Modifier
                 .padding(horizontal = 8.dp),
 
+        )
+    }
+}
+
+@Composable
+fun Footer(modifier: Modifier) {
+    Column(modifier.fillMaxWidth()) {
+        HorizontalDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(8.dp)
+                .background(Color.LightGray)
+                .height(1.dp)
+        )
+        SignUp(modifier = Modifier.align(Alignment.CenterHorizontally))
+    }
+
+}
+
+@Composable
+fun SignUp(modifier: Modifier) {
+    Row(modifier = modifier) {
+        Text(
+            "Don't have an account?",
+            fontSize = 14.sp,
+            color = Color.Gray,
+            modifier = Modifier.padding(horizontal = 8.dp)
+        )
+        Text(
+            "Sign Up",
+            fontSize = 14.sp,
+            color = Color(0xFF4EA8E9),
+            fontWeight = FontWeight.Bold
         )
     }
 }
