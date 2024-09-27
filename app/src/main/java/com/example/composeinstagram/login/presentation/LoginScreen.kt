@@ -1,4 +1,4 @@
-package com.example.composeinstagram
+package com.example.composeinstagram.login.presentation
 
 import android.app.Activity
 import androidx.compose.foundation.Image
@@ -20,6 +20,7 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -28,9 +29,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -42,20 +43,20 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.composeinstagram.R
 
-@Preview(showSystemUi = true)
+
 @Composable
-fun LoginScreen() {
+fun LoginScreen(loginViewModel: LoginViewModel) {
     Box(
         Modifier
             .fillMaxSize()
             .padding(vertical = 24.dp)
     ) {
         Header(Modifier.align(Alignment.TopEnd))
-        Body(Modifier.align(Alignment.Center))
+        Body(Modifier.align(Alignment.Center), loginViewModel)
         Footer(Modifier.align(Alignment.BottomCenter))
     }
 }
@@ -72,11 +73,12 @@ fun Header(modifier: Modifier) {
 }
 
 @Composable
-fun Body(modifier: Modifier) {
+fun Body(modifier: Modifier, loginViewModel: LoginViewModel) {
 
-    var email by rememberSaveable { mutableStateOf("") }
-    var password by rememberSaveable { mutableStateOf("") }
-    var isLoginEnable by rememberSaveable { mutableStateOf(false) }
+    val email: String by loginViewModel.email.observeAsState("")
+    val password: String by loginViewModel.password.observeAsState("")
+    val isLoginEnable: Boolean by loginViewModel.isLoginEnable.observeAsState(initial =false)
+
 
     Column(modifier = modifier) {
         ImageLogo(
@@ -89,13 +91,13 @@ fun Body(modifier: Modifier) {
             Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(), email
-        ) { email = it }
+        ) { loginViewModel.onLoginChange(it, password) }
         Spacer(modifier = Modifier.size(4.dp))
         PasswordField(
             Modifier
                 .align(Alignment.CenterHorizontally)
                 .fillMaxWidth(), password
-        ) { password = it }
+        ) { loginViewModel.onLoginChange(email,it) }
         Spacer(modifier = Modifier.size((8).dp))
         ForgotPassword(
             Modifier.align(Alignment.End)
@@ -170,7 +172,7 @@ fun PasswordField(modifier: Modifier, password: String, onPasswordChange: (Strin
                 Icon(imageVector = img, contentDescription = "password visibility")
             }
         },
-        visualTransformation = if(passwordVisibility){
+        visualTransformation = if (passwordVisibility) {
             VisualTransformation.None
         } else {
             PasswordVisualTransformation()
@@ -178,9 +180,6 @@ fun PasswordField(modifier: Modifier, password: String, onPasswordChange: (Strin
     )
 
 }
-
-
-
 
 @Composable
 fun ForgotPassword(modifier: Modifier) {
@@ -195,7 +194,17 @@ fun ForgotPassword(modifier: Modifier) {
 
 @Composable
 fun LoginButton(isLoginEnable: Boolean, modifier: Modifier) {
-    Button(onClick = {}, enabled = isLoginEnable, modifier = modifier.fillMaxWidth()) {
+    Button(
+        onClick = {},
+        enabled = isLoginEnable,
+        modifier = modifier.fillMaxWidth(),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFF4EA8E9),
+            disabledContainerColor = Color(0xFF78C8F9).copy(alpha = 0.5f),
+            contentColor = Color.White,
+            disabledContentColor = Color.White
+        )
+    ) {
         Text("Login")
     }
 }
