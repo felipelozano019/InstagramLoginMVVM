@@ -73,4 +73,8 @@ dependencies {
 
     //LiveData
     implementation(libs.androidx.lifecycle.livedata.ktx)
+
+    //Retrofit
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
 }
