@@ -7,18 +7,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.composeinstagram.login.domain.LoginUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginViewModel : ViewModel(){
-
-    private val loginUseCase = LoginUseCase()
+@HiltViewModel
+class LoginViewModel @Inject constructor(private val loginUseCase: LoginUseCase): ViewModel(){
 
     //Para que la vista pueda leer pero no modificar el valor
     private val _email = MutableLiveData<String>()
     private val _password = MutableLiveData<String>()
     private val _isLoginEnable = MutableLiveData<Boolean>()
     private val _isLoading = MutableLiveData<Boolean>()
-
 
     val email: LiveData<String> = _email
     val password: LiveData<String> = _password
